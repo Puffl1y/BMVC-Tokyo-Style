@@ -1,0 +1,16 @@
+[
+  {
+    "username": "admin",
+    "password_hash": "6cb7fce28f26f9dd02113c79bc35dc6775e7bcee666d3d7a743a492a7164f9db",
+    "salt": "849d670eaccebb2576c1d98cedb1a772",
+    "role": "admin",
+    "display_name": "Administrador"
+  },
+  {
+    "username": "yuki",
+    "password_hash": "6e3a03acc4e7a2c3cbbc62a845982e80208dd07485e2a71bf76a0b0553a5a1b9",
+    "salt": "6712b604a98739d130136b4d7e6fef5b",
+    "role": "cliente",
+    "display_name": "Yuki"
+  }
+]

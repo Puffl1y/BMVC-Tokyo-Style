@@ -1,0 +1,160 @@
+[
+  {
+    "id": "TKS-001",
+    "name": "Camiseta Oversized Sakura",
+    "category": "camisetas",
+    "price": 89.9,
+    "stock": 24,
+    "sizes": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "color": "#f2b8c6"
+  },
+  {
+    "id": "TKS-002",
+    "name": "Camiseta Kanji Preta",
+    "category": "camisetas",
+    "price": 79.9,
+    "stock": 31,
+    "sizes": [
+      "P",
+      "M",
+      "G",
+      "GG"
+    ],
+    "color": "#161616"
+  },
+  {
+    "id": "TKS-003",
+    "name": "Hoodie Shibuya",
+    "category": "moletons",
+    "price": 219.9,
+    "stock": 12,
+    "sizes": [
+      "M",
+      "G",
+      "GG"
+    ],
+    "color": "#6b7280"
+  },
+  {
+    "id": "TKS-004",
+    "name": "Moletom Harajuku Rosa",
+    "category": "moletons",
+    "price": 229.9,
+    "stock": 4,
+    "sizes": [
+      "P",
+      "M",
+      "G"
+    ],
+    "color": "#e8a0bf"
+  },
+  {
+    "id": "TKS-005",
+    "name": "Jaqueta Bomber Tokyo Night",
+    "category": "jaquetas",
+    "price": 349.9,
+    "stock": 8,
+    "sizes": [
+      "M",
+      "G",
+      "GG"
+    ],
+    "color": "#1d2b53"
+  },
+  {
+    "id": "TKS-006",
+    "name": "Jaqueta Coach Shinjuku",
+    "category": "jaquetas",
+    "price": 299.9,
+    "stock": 0,
+    "sizes": [
+      "M",
+      "G"
+    ],
+    "color": "#3d4a3a"
+  },
+  {
+    "id": "TKS-007",
+    "name": "Calça Cargo Akihabara",
+    "category": "calcas",
+    "price": 259.9,
+    "stock": 15,
+    "sizes": [
+      "38",
+      "40",
+      "42",
+      "44"
+    ],
+    "color": "#8a7f68"
+  },
+  {
+    "id": "TKS-008",
+    "name": "Calça Wide Leg Ginza",
+    "category": "calcas",
+    "price": 239.9,
+    "stock": 18,
+    "sizes": [
+      "38",
+      "40",
+      "42",
+      "44"
+    ],
+    "color": "#262626"
+  },
+  {
+    "id": "TKS-009",
+    "name": "Saia Plissada Kawaii",
+    "category": "saias",
+    "price": 169.9,
+    "stock": 10,
+    "sizes": [
+      "P",
+      "M",
+      "G"
+    ],
+    "color": "#b3202a"
+  },
+  {
+    "id": "TKS-010",
+    "name": "Vestido Kimono Wrap",
+    "category": "vestidos",
+    "price": 279.9,
+    "stock": 7,
+    "sizes": [
+      "P",
+      "M",
+      "G"
+    ],
+    "color": "#e9e2d0"
+  },
+  {
+    "id": "TKS-011",
+    "name": "Boné Tokyo Club",
+    "category": "acessorios",
+    "price": 99.9,
+    "stock": 40,
+    "sizes": [
+      "Único"
+    ],
+    "color": "#d9261c"
+  },
+  {
+    "id": "TKS-012",
+    "name": "Tênis Shinkansen",
+    "category": "calcados",
+    "price": 399.9,
+    "stock": 3,
+    "sizes": [
+      "37",
+      "39",
+      "41",
+      "43"
+    ],
+    "color": "#f1f1f1"
+  }
+]

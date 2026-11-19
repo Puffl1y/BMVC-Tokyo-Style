@@ -1,0 +1,43 @@
+/* Tokyo Style - página de login (portal) */
+
+.portal { min-height: 70vh; display: grid; place-items: center; padding: 48px 24px; }
+
+.login-card {
+  width: 100%; max-width: 960px; display: grid; grid-template-columns: .8fr 1.2fr;
+  background: var(--white); border: 2px solid var(--ink); border-radius: 28px; overflow: hidden;
+  box-shadow: 10px 10px 0 var(--ink);
+}
+.login-side { position: relative; background: var(--paper-2); min-height: 320px; overflow: hidden; isolation: isolate; }
+.login-side .sun { width: 80%; top: 50%; transform: translate(-50%, -50%); animation: none; }
+.login-side .vertical-kanji { right: auto; left: 20px; top: 20px; font-size: 1.6rem; color: var(--ink); }
+
+.login-form-wrap { padding: clamp(28px, 5vw, 52px); }
+.login-form-wrap h1 { font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 900; margin-bottom: 12px; }
+.login-form-wrap .lead { margin-bottom: 26px; font-size: 1rem; }
+
+.password-row { display: flex; gap: 8px; }
+.password-row input { flex: 1; }
+.toggle-pass {
+  border: 2px solid var(--line); background: var(--white); border-radius: 10px; padding: 0 14px;
+  font-weight: 700; font-size: .82rem; min-width: 84px;
+}
+.toggle-pass:hover { border-color: var(--ink); }
+
+.form-error { color: var(--red-dark); font-weight: 700; font-size: .9rem; margin: -4px 0 14px; }
+.login-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.demo { margin-top: 26px; border: 2px dashed var(--line); border-radius: 12px; padding: 12px 16px; font-size: .9rem; }
+.demo summary { cursor: pointer; font-weight: 700; }
+.demo table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+.demo th, .demo td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+.demo th { font-size: .75rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+.demo code { background: var(--paper-2); padding: 2px 6px; border-radius: 5px; }
+
+.back-link { margin-top: 24px; font-size: .9rem; }
+.back-link a { color: var(--muted); }
+
+@media (max-width: 760px) {
+  .login-card { grid-template-columns: 1fr; box-shadow: 6px 6px 0 var(--ink); }
+  .login-side { min-height: 130px; }
+  .login-side .sun { width: 150px; }
+}
