@@ -81,20 +81,35 @@ class StockRecord():
             self.__save()
             return product
 
+    def update(self, product_id, name, category, price, stock, sizes, color):
+        """UPDATE completo: altera todos os campos de um produto."""
+        with self.__lock:
+            product = self.get(product_id)
+            if not product:
+                return None
+            product.name = name
+            product.category = category
+            product.price = float(price)
+            product.stock = int(stock)
+            product.sizes = list(sizes)
+            product.color = color
+            self.__save()
+            return product
+
     def set_stock(self, product_id, quantity):
         with self.__lock:
             product = self.get(product_id)
             if not product:
-                return False
+                return None
             product.stock = max(0, int(quantity))
             self.__save()
-            return True
+            return product
 
     def remove(self, product_id):
         with self.__lock:
             product = self.get(product_id)
             if not product:
-                return False
+                return None
             self.__products.remove(product)
             self.__save()
-            return True
+            return product

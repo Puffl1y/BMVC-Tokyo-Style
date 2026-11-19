@@ -1,15 +1,15 @@
 [
   {
     "username": "admin",
-    "password_hash": "6cb7fce28f26f9dd02113c79bc35dc6775e7bcee666d3d7a743a492a7164f9db",
-    "salt": "849d670eaccebb2576c1d98cedb1a772",
+    "password_hash": "f317f588551e027491dff05f4013dc2357aa2188264cfb793db156ee32f58d0d",
+    "salt": "ca37a94d78f17f784d6aac496ef78c11",
     "role": "admin",
     "display_name": "Administrador"
   },
   {
     "username": "yuki",
-    "password_hash": "6e3a03acc4e7a2c3cbbc62a845982e80208dd07485e2a71bf76a0b0553a5a1b9",
-    "salt": "6712b604a98739d130136b4d7e6fef5b",
+    "password_hash": "e9260a6a117a3f70f7e16184381bbb7f737806439c2e0963b228bd14dc3f9408",
+    "salt": "ab90eb8b76331c915781712e18c36185",
     "role": "cliente",
     "display_name": "Yuki"
   }

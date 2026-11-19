@@ -6,6 +6,7 @@
   <meta name="description" content="Tokyo Style - streetwear inspirado em Tóquio: camisetas, moletons, jaquetas, calças e acessórios.">
   <title>Tokyo Style | Streetwear inspirado em Tóquio</title>
   <link rel="stylesheet" type="text/css" href="/static/css/tokyo.css">
+  <script src="/static/js/realtime.js" defer></script>
   <script src="/static/js/tokyo.js" defer></script>
 </head>
 <body class="page-home">
@@ -62,6 +63,7 @@
           <h2>Coleção</h2>
         </div>
         <div class="tools">
+          <p class="live" id="live-status" data-state="off"><span class="dot" aria-hidden="true"></span><span class="live-text">Conectando…</span></p>
           <label class="sr-only" for="sort">Ordenar produtos</label>
           <select id="sort" class="select">
             <option value="default">Destaques</option>
@@ -82,7 +84,7 @@
 
       <div class="grid" id="product-grid">
         % for p in products:
-        <article class="card status-{{p.status}}" data-category="{{p.category}}"
+        <article class="card status-{{p.status}}" data-id="{{p.id}}" data-category="{{p.category}}"
                  data-price="{{p.price}}" data-name="{{p.name}}">
           <div class="card-media" style="--garment: {{p.color}}">
             <svg class="garment" aria-hidden="true"><use href="/static/img/icons.svg#{{p.icon}}"/></svg>

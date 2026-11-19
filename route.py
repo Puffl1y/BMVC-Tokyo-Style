@@ -1,11 +1,19 @@
+try:                      # WebSocket: o eventlet precisa ser "patcheado" primeiro
+    import eventlet
+    eventlet.monkey_patch()
+except ImportError:
+    eventlet = None
+
 from app.controllers.application import Application
+from app.controllers.realtime import Realtime
 from bottle import Bottle, route, run, request, static_file
-from bottle import redirect, template, response
+from bottle import redirect, template, response, debug
 import os
 
 
 app = Bottle()
 ctl = Application()
+realtime = Realtime()
 
 # Em produção (HTTPS) defina TOKYO_SECURE_COOKIE=1 para enviar o cookie
 # de sessão somente por conexões seguras. Em HTTP local, fica desligado.
@@ -64,6 +72,14 @@ def logout():
     redirect('/?msg=saiu')
 
 
+def finish(result):
+    """Redireciona com a mensagem e avisa todos os navegadores (WebSocket)."""
+    code, product = result
+    if product is not None:
+        realtime.broadcast(ctl.product_event(code, product))
+    redirect('/estoque?msg=' + code)
+
+
 @app.route('/estoque', method='GET')
 def action_estoque():
     page, error = ctl.render('estoque')
@@ -72,19 +88,34 @@ def action_estoque():
     return page
 
 
-@app.route('/estoque/add', method='POST')
+@app.route('/estoque/add', method='POST')                       # CREATE
 def action_estoque_add():
-    redirect('/estoque?msg=' + ctl.stock_add(request.forms))
+    finish(ctl.stock_add(request.forms))
 
 
-@app.route('/estoque/update/<product_id>', method='POST')
+@app.route('/estoque/edit/<product_id>', method='GET')          # UPDATE (form)
+def action_estoque_edit_form(product_id):
+    page, error = ctl.render('editar', product_id)
+    if error in ('login', 'acesso'):
+        redirect('/portal?msg=' + error)
+    if error:
+        redirect('/estoque?msg=' + error)
+    return page
+
+
+@app.route('/estoque/edit/<product_id>', method='POST')         # UPDATE (salvar)
+def action_estoque_edit(product_id):
+    finish(ctl.stock_edit(product_id, request.forms))
+
+
+@app.route('/estoque/update/<product_id>', method='POST')       # UPDATE (qtd.)
 def action_estoque_update(product_id):
-    redirect('/estoque?msg=' + ctl.stock_update(product_id, request.forms))
+    finish(ctl.stock_update(product_id, request.forms))
 
 
-@app.route('/estoque/delete/<product_id>', method='POST')
+@app.route('/estoque/delete/<product_id>', method='POST')       # DELETE
 def action_estoque_delete(product_id):
-    redirect('/estoque?msg=' + ctl.stock_remove(product_id))
+    finish(ctl.stock_remove(product_id))
 
 
 #-----------------------------------------------------------------------------
@@ -92,4 +123,12 @@ def action_estoque_delete(product_id):
 
 if __name__ == '__main__':
 
-    run(app, host='0.0.0.0', port=8080, debug=True)
+    debug(True)
+    if realtime.available:
+        # Servidor do eventlet: atende HTTP e WebSocket (/ws) na porta 8080
+        from eventlet import wsgi
+        print('Tokyo Style em http://localhost:8080  (WebSocket em /ws)')
+        wsgi.server(eventlet.listen(('0.0.0.0', 8080)), realtime.wsgi(app))
+    else:
+        print('eventlet nao encontrado: iniciando SEM WebSocket')
+        run(app, host='0.0.0.0', port=8080)

@@ -15,6 +15,7 @@ MESSAGES = {
     'adicionado': ('ok', 'Produto cadastrado no estoque.'),
     'atualizado': ('ok', 'Quantidade atualizada.'),
     'removido': ('ok', 'Produto removido do estoque.'),
+    'editado': ('ok', 'Produto atualizado com sucesso.'),
     'invalido': ('erro', 'Dados inválidos. Confira os campos e tente novamente.'),
     'inexistente': ('erro', 'Produto não encontrado.'),
 }
@@ -30,6 +31,7 @@ class Application():
             'home': self.home,
             'portal': self.portal,
             'estoque': self.estoque,
+            'editar': self.editar,
         }
         self.__users = DataRecord()
         self.__stock = StockRecord()
@@ -86,6 +88,23 @@ class Application():
                         notice=self.notice())
         return page, None
 
+    def editar(self, product_id):
+        """Formulário de edição (UPDATE). Retorna (conteúdo, código de erro)."""
+        user = self.current_user()
+        if not user:
+            return None, 'login'
+        if not user.is_admin:
+            return None, 'acesso'
+        product = self.__stock.get(product_id)
+        if not product:
+            return None, 'inexistente'
+        page = template('app/views/html/editar',
+                        product=product,
+                        categories=list(CATEGORIES.items()),
+                        current_user=user,
+                        notice=self.notice())
+        return page, None
+
     # ------------------------------------------------------- autenticação
     def current_user(self):
         return self.__users.getCurrentUser(self.get_session_id())
@@ -108,9 +127,16 @@ class Application():
             self.__users.logout(session_id)
 
     # ----------------------------------------------- ações do estoque (admin)
-    def stock_add(self, form):
-        if not self.is_admin():
-            return 'acesso'
+    # Todas retornam (código_da_mensagem, produto_ou_None). O produto é usado
+    # pela rota para avisar, via WebSocket, todos os navegadores conectados.
+    def product_event(self, action, product):
+        """Mensagem enviada pelo WebSocket (apenas dados públicos do produto)."""
+        return {'action': action, 'id': product.id, 'name': product.name,
+                'stock': product.stock, 'status': product.status,
+                'status_label': product.status_label}
+
+    def __parse_product_form(self, form):
+        """Valida o formulário de produto. Retorna dict ou None se inválido."""
         name = (form.getunicode('name') or '').strip()
         category = form.get('category', '')
         sizes = [s.strip() for s in (form.getunicode('sizes') or '').split(',')
@@ -120,29 +146,47 @@ class Application():
             price = float((form.get('price') or '').replace(',', '.'))
             stock = int(form.get('stock') or '')
         except ValueError:
-            return 'invalido'
+            return None
         if (not 2 <= len(name) <= 60 or category not in CATEGORIES
                 or price < 0 or price > 99999 or not 0 <= stock <= 99999
                 or not sizes or len(sizes) > 8
                 or any(len(s) > 8 for s in sizes)
                 or not HEX_COLOR.match(color)):
-            return 'invalido'
-        self.__stock.add(name, category, round(price, 2), stock, sizes, color)
-        return 'adicionado'
+            return None
+        return dict(name=name, category=category, price=round(price, 2),
+                    stock=stock, sizes=sizes, color=color)
 
-    def stock_update(self, product_id, form):
+    def stock_add(self, form):                       # CREATE
         if not self.is_admin():
-            return 'acesso'
+            return 'acesso', None
+        data = self.__parse_product_form(form)
+        if not data:
+            return 'invalido', None
+        return 'adicionado', self.__stock.add(**data)
+
+    def stock_edit(self, product_id, form):          # UPDATE (todos os campos)
+        if not self.is_admin():
+            return 'acesso', None
+        data = self.__parse_product_form(form)
+        if not data:
+            return 'invalido', None
+        product = self.__stock.update(product_id, **data)
+        return ('editado', product) if product else ('inexistente', None)
+
+    def stock_update(self, product_id, form):        # UPDATE (só a quantidade)
+        if not self.is_admin():
+            return 'acesso', None
         try:
             quantity = int(form.get('stock') or '')
         except ValueError:
-            return 'invalido'
+            return 'invalido', None
         if not 0 <= quantity <= 99999:
-            return 'invalido'
-        return 'atualizado' if self.__stock.set_stock(product_id, quantity) \
-            else 'inexistente'
+            return 'invalido', None
+        product = self.__stock.set_stock(product_id, quantity)
+        return ('atualizado', product) if product else ('inexistente', None)
 
-    def stock_remove(self, product_id):
+    def stock_remove(self, product_id):              # DELETE
         if not self.is_admin():
-            return 'acesso'
-        return 'removido' if self.__stock.remove(product_id) else 'inexistente'
+            return 'acesso', None
+        product = self.__stock.remove(product_id)
+        return ('removido', product) if product else ('inexistente', None)

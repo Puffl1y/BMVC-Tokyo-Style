@@ -357,3 +357,15 @@ main { display: block; }
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .reveal { opacity: 1; translate: none; }
 }
+
+/* ---------- Indicador "ao vivo" (WebSocket) ---------- */
+.live { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; font-weight: 700; color: var(--muted); }
+.live .dot { width: 10px; height: 10px; border-radius: 50%; background: #9b9486; }
+.live[data-state="on"] { color: var(--ok); }
+.live[data-state="on"] .dot { background: var(--ok); animation: pulse 1.8s ease-out infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(47, 125, 79, .55); } 100% { box-shadow: 0 0 0 10px rgba(47, 125, 79, 0); } }
+.tools { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+
+/* destaque quando um item é atualizado em tempo real */
+.card.updated { animation: flashcard 2s ease; }
+@keyframes flashcard { 0%, 60% { box-shadow: 0 0 0 4px var(--red); } 100% { box-shadow: 0 0 0 0 transparent; } }

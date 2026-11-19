@@ -7,6 +7,7 @@
   <link rel="stylesheet" type="text/css" href="/static/css/tokyo.css">
   <link rel="stylesheet" type="text/css" href="/static/css/estoque.css">
   <script src="/static/js/tokyo.js" defer></script>
+  <script src="/static/js/realtime.js" defer></script>
   <script src="/static/js/estoque.js" defer></script>
 </head>
 <body class="page-estoque">
@@ -24,7 +25,10 @@
         <h1>Controle de estoque</h1>
         <p class="lead">Consulte, ajuste quantidades e cadastre novas peças. As alterações aparecem na loja imediatamente.</p>
       </div>
-      <button type="button" class="btn btn-red" id="toggle-add" aria-expanded="false" aria-controls="add-panel">+ Nova peça</button>
+      <div class="head-side">
+        <p class="live" id="live-status" data-state="off"><span class="dot" aria-hidden="true"></span><span class="live-text">Conectando…</span></p>
+        <button type="button" class="btn btn-red" id="toggle-add" aria-expanded="false" aria-controls="add-panel">+ Nova peça</button>
+      </div>
     </header>
 
     <!-- ---------- Indicadores ---------- -->
@@ -49,6 +53,12 @@
         <p class="kpi-label">Valor do estoque (preço de venda)</p>
         <p class="kpi-value">R$ {{summary['value_br']}}</p>
       </article>
+    </section>
+
+    <!-- ---------- Atividade em tempo real (WebSocket) ---------- -->
+    <section class="feed" aria-label="Atividade em tempo real">
+      <h2>Atividade em tempo real</h2>
+      <ol id="live-feed" aria-live="polite"><li class="feed-empty">Aguardando alterações…</li></ol>
     </section>
 
     <!-- ---------- Cadastro ---------- -->
@@ -126,7 +136,7 @@
           </thead>
           <tbody>
             % for p in products:
-            <tr data-status="{{p.status}}" data-search="{{(p.id + ' ' + p.name + ' ' + p.category_label).lower()}}">
+            <tr data-id="{{p.id}}" data-status="{{p.status}}" data-search="{{(p.id + ' ' + p.name + ' ' + p.category_label).lower()}}">
               <td class="mono">{{p.id}}</td>
               <td>
                 <span class="swatch" style="background: {{p.color}}" aria-hidden="true"></span>
@@ -138,7 +148,7 @@
               <td>
                 <form action="/estoque/update/{{p.id}}" method="post" class="qty-form">
                   <button type="button" class="step" data-step="-1" aria-label="Diminuir">−</button>
-                  <input type="number" name="stock" min="0" max="99999" value="{{p.stock}}"
+                  <input type="number" name="stock" min="0" max="99999" value="{{p.stock}}" data-original="{{p.stock}}"
                          aria-label="Quantidade de {{p.name}}" required>
                   <button type="button" class="step" data-step="1" aria-label="Aumentar">+</button>
                   <button type="submit" class="btn btn-ink btn-sm">Salvar</button>
@@ -147,9 +157,12 @@
               <td><span class="pill pill-{{p.status}}">{{p.status_label}}</span></td>
               <td class="num">R$ {{p.total_br}}</td>
               <td>
-                <form action="/estoque/delete/{{p.id}}" method="post" data-confirm="Remover {{p.name}} do estoque?">
-                  <button type="submit" class="btn btn-danger btn-sm">Remover</button>
-                </form>
+                <div class="row-actions">
+                  <a class="btn btn-ghost btn-sm" href="/estoque/edit/{{p.id}}">Editar</a>
+                  <form action="/estoque/delete/{{p.id}}" method="post" data-confirm="Remover {{p.name}} do estoque?">
+                    <button type="submit" class="btn btn-danger btn-sm">Remover</button>
+                  </form>
+                </div>
               </td>
             </tr>
             % end
